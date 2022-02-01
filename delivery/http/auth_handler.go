@@ -52,7 +52,8 @@ func (ah *AuthHandler) LoginByUsernameAndPassword(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, helper.SuccessResponse{
-		Status: http.StatusOK,
-		Data:   res,
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    res,
 	})
 }

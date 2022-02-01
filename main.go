@@ -11,10 +11,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 
-	_authHttp "github.com/malikkhoiri/auth-svc/auth/delivery/http"
-	_authRepo "github.com/malikkhoiri/auth-svc/auth/repository"
-	_authUsecase "github.com/malikkhoiri/auth-svc/auth/usecase"
+	httpDelivery "github.com/malikkhoiri/auth-svc/delivery/http"
 	"github.com/malikkhoiri/auth-svc/helper"
+	repo "github.com/malikkhoiri/auth-svc/repository/mysql"
+	usecase "github.com/malikkhoiri/auth-svc/usecase"
 )
 
 func init() {
@@ -55,10 +55,17 @@ func main() {
 
 	e := echo.New()
 	e.Validator = &helper.CustomValidator{Validator: validator.New()}
-
-	authRepo := _authRepo.NewMysqlAuthRepository(dbConn)
 	timeoutCtx := time.Duration(2) * time.Second
-	au := _authUsecase.NewAuthUsecase(authRepo, timeoutCtx)
-	_authHttp.NewAuthHandler(e, au)
+
+	// Authentication
+	authRepo := repo.NewMysqlAuthRepository(dbConn)
+	au := usecase.NewAuthUsecase(authRepo, timeoutCtx)
+	httpDelivery.NewAuthHandler(e, au)
+
+	// User
+	userRepo := repo.NewMysqlUserRepository(dbConn)
+	userUsecase := usecase.NewUserUsecase(userRepo, timeoutCtx)
+	httpDelivery.NewUserHandler(e, userUsecase)
+
 	log.Fatal(e.Start(viper.GetString("server.port")))
 }
