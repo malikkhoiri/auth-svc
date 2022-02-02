@@ -17,7 +17,32 @@ func NewMysqlUserRepository(Conn *sql.DB) domain.UserRepository {
 }
 
 func (m *mysqlUserRepository) Fetch(ctx context.Context, cursor string) ([]domain.User, string, error) {
+	query := "SELECT id, name, username, email, created_at, updated_at FROM users ORDER BY created_at DESC"
+	rows, err := m.Conn.QueryContext(ctx, query)
+
+	if err != nil {
+		return nil, "", err
+	}
+
 	users := make([]domain.User, 0)
+	for rows.Next() {
+		user := domain.User{}
+		err = rows.Scan(
+			&user.ID,
+			&user.Name,
+			&user.Username,
+			&user.Email,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+
+		if err != nil {
+			return nil, "", err
+		}
+
+		users = append(users, user)
+	}
+
 	return users, "", nil
 }
 

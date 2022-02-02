@@ -17,8 +17,26 @@ func NewUserHandler(e *echo.Echo, u domain.UserUsecase) {
 	handler := &UserHandler{
 		UUsecase: u,
 	}
+	e.GET("/user", handler.Fetch)
 	e.GET("/user/:id", handler.GetByID)
 	e.POST("/user", handler.Store)
+}
+
+func (uh *UserHandler) Fetch(c echo.Context) error {
+	users, _, err := uh.UUsecase.Fetch(c.Request().Context(), "")
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, helper.BadResponse{
+			Status:  http.StatusBadRequest,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, helper.SuccessResponse{
+		Status:  http.StatusOK,
+		Message: "Success",
+		Data:    users,
+	})
 }
 
 func (uh *UserHandler) GetByID(c echo.Context) error {

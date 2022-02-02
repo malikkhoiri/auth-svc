@@ -20,8 +20,9 @@ func NewUserUsecase(userRepo domain.UserRepository, timeout time.Duration) domai
 }
 
 func (uc *userUsecase) Fetch(c context.Context, cursor string) ([]domain.User, string, error) {
-	users := make([]domain.User, 0)
-	return users, "", nil
+	ctx, cancel := context.WithTimeout(c, uc.ctxTimeout)
+	defer cancel()
+	return uc.userRepo.Fetch(ctx, cursor)
 }
 
 func (uc *userUsecase) GetByID(c context.Context, id int64) (domain.User, error) {
