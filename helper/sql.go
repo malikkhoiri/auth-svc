@@ -1,14 +1,34 @@
 package helper
 
-import "database/sql"
+import (
+	"database/sql"
+	"encoding/json"
+)
 
-func NullString(s string) sql.NullString {
-	if len(s) == 0 {
-		return sql.NullString{}
+type NullString struct {
+	sql.NullString
+}
+
+func (ns NullString) MarshalJSON() ([]byte, error) {
+	if !ns.Valid {
+		return []byte("null"), nil
 	}
 
-	return sql.NullString{
-		String: s,
-		Valid:  true,
+	return json.Marshal(ns.String)
+}
+
+func (ns *NullString) UnmarshalJSON(data []byte) error {
+	var s *string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
 	}
+
+	if s != nil {
+		ns.Valid = true
+		ns.String = *s
+	} else {
+		ns.Valid = false
+	}
+
+	return nil
 }

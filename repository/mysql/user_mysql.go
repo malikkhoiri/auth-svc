@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/malikkhoiri/auth-svc/domain"
-	"github.com/malikkhoiri/auth-svc/helper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,7 +22,28 @@ func (m *mysqlUserRepository) Fetch(ctx context.Context, cursor string) ([]domai
 }
 
 func (m *mysqlUserRepository) GetByID(ctx context.Context, id int64) (domain.User, error) {
-	return domain.User{}, nil
+	query := "SELECT id, name, username, email, created_at, updated_at FROM users WHERE id=?"
+	stmt, err := m.Conn.Prepare(query)
+	user := domain.User{}
+
+	if err != nil {
+		return user, err
+	}
+
+	err = stmt.QueryRow(id).Scan(
+		&user.ID,
+		&user.Name,
+		&user.Username,
+		&user.Email,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+	)
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 func (m *mysqlUserRepository) Store(ctx context.Context, u *domain.User) error {
@@ -40,7 +60,7 @@ func (m *mysqlUserRepository) Store(ctx context.Context, u *domain.User) error {
 		return err
 	}
 
-	stmt.ExecContext(ctx, u.Name, helper.NullString(u.Username), u.Email, string(crypt))
+	stmt.ExecContext(ctx, u.Name, u.Username, u.Email, string(crypt))
 
 	return nil
 }

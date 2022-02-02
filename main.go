@@ -33,7 +33,7 @@ func main() {
 	mysqlPort := viper.GetString(`mysql.port`)
 	mysqlUser := viper.GetString(`mysql.username`)
 	mysqlPass := viper.GetString(`mysql.password`)
-	conn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", mysqlUser, mysqlPass, mysqlHost, mysqlPort, dbName)
+	conn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", mysqlUser, mysqlPass, mysqlHost, mysqlPort, dbName)
 	dbConn, err := sql.Open("mysql", conn)
 
 	if err != nil {

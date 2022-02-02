@@ -25,8 +25,9 @@ func (uc *userUsecase) Fetch(c context.Context, cursor string) ([]domain.User, s
 }
 
 func (uc *userUsecase) GetByID(c context.Context, id int64) (domain.User, error) {
-	user := domain.User{}
-	return user, nil
+	ctx, cancel := context.WithTimeout(c, uc.ctxTimeout)
+	defer cancel()
+	return uc.userRepo.GetByID(ctx, id)
 }
 
 func (uc *userUsecase) Store(c context.Context, u *domain.User) error {
