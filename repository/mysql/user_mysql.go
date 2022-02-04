@@ -85,7 +85,11 @@ func (m *mysqlUserRepository) Store(ctx context.Context, u *domain.User) error {
 		return err
 	}
 
-	stmt.ExecContext(ctx, u.Name, u.Username, u.Email, string(crypt))
+	_, err = stmt.ExecContext(ctx, u.Name, u.Username, u.Email, string(crypt))
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
