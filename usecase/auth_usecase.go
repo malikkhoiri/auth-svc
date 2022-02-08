@@ -20,11 +20,11 @@ func NewAuthUsecase(authRepo domain.AuthRepository, timeout time.Duration) domai
 	}
 }
 
-func (au *authUsecase) LoginByUsernameAndPassword(c context.Context, username, password string) (helper.M, error) {
+func (au *authUsecase) LoginByEmailAndPassword(c context.Context, email, password string) (helper.M, error) {
 	ctx, cancel := context.WithTimeout(c, au.ctxTimeout)
 	defer cancel()
 
-	res, err := au.authRepo.LoginByUsernameAndPassword(ctx, username, password)
+	res, err := au.authRepo.LoginByEmailAndPassword(ctx, email, password)
 
 	return helper.M{"token": res}, err
 }

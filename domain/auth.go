@@ -8,19 +8,19 @@ import (
 )
 
 type Auth struct {
-	Username string `json:"username" validate:"required"`
+	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
 type Claims struct {
 	jwt.RegisteredClaims
-	Username string `json:"Username"`
+	Email string `json:"Username"`
 }
 
 type AuthRepository interface {
-	LoginByUsernameAndPassword(ctx context.Context, username, password string) (token string, err error)
+	LoginByEmailAndPassword(ctx context.Context, username, email string) (token string, err error)
 }
 
 type AuthUsecase interface {
-	LoginByUsernameAndPassword(ctx context.Context, username, password string) (helper.M, error)
+	LoginByEmailAndPassword(ctx context.Context, email, password string) (helper.M, error)
 }

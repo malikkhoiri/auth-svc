@@ -18,10 +18,10 @@ func NewAuthHandler(e *echo.Echo, au domain.AuthUsecase) {
 	handler := &AuthHandler{
 		AUsecase: au,
 	}
-	e.POST("/login", handler.LoginByUsernameAndPassword)
+	e.POST("/login", handler.LoginByEmailAndPassword)
 }
 
-func (ah *AuthHandler) LoginByUsernameAndPassword(c echo.Context) error {
+func (ah *AuthHandler) LoginByEmailAndPassword(c echo.Context) error {
 	auth := &domain.Auth{}
 	err := c.Bind(auth)
 
@@ -42,7 +42,7 @@ func (ah *AuthHandler) LoginByUsernameAndPassword(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
-	res, err := ah.AUsecase.LoginByUsernameAndPassword(ctx, auth.Username, auth.Password)
+	res, err := ah.AUsecase.LoginByEmailAndPassword(ctx, auth.Email, auth.Password)
 
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, helper.BadResponse{
