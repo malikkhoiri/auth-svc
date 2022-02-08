@@ -23,7 +23,7 @@ func NewMysqlAuthRepository(Conn *sql.DB) domain.AuthRepository {
 }
 
 func (m *mysqlAuthRepository) LoginByEmailAndPassword(ctx context.Context, email, password string) (result string, err error) {
-	query := "SELECT email, password FROM users WHERE email = ?"
+	query := "SELECT email, password FROM user WHERE email = ?"
 	stmt, err := m.Conn.Prepare(query)
 
 	if err != nil {

@@ -17,7 +17,7 @@ func NewMysqlUserRepository(Conn *sql.DB) domain.UserRepository {
 }
 
 func (m *mysqlUserRepository) Fetch(ctx context.Context, cursor string) ([]domain.User, string, error) {
-	query := "SELECT id, name, username, email, created_at, updated_at FROM users ORDER BY created_at DESC"
+	query := "SELECT id, name, username, email, created_at, updated_at FROM user ORDER BY created_at DESC"
 	rows, err := m.Conn.QueryContext(ctx, query)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func (m *mysqlUserRepository) Fetch(ctx context.Context, cursor string) ([]domai
 }
 
 func (m *mysqlUserRepository) GetByID(ctx context.Context, id int64) (domain.User, error) {
-	query := "SELECT id, name, username, email, created_at, updated_at FROM users WHERE id=?"
+	query := "SELECT id, name, username, email, created_at, updated_at FROM user WHERE id=?"
 	stmt, err := m.Conn.Prepare(query)
 	user := domain.User{}
 
@@ -72,7 +72,7 @@ func (m *mysqlUserRepository) GetByID(ctx context.Context, id int64) (domain.Use
 }
 
 func (m *mysqlUserRepository) Store(ctx context.Context, u *domain.User) error {
-	query := "INSERT users (name, username, email, password) VALUES (?, ?, ?, ?)"
+	query := "INSERT user (name, username, email, password) VALUES (?, ?, ?, ?)"
 	stmt, err := m.Conn.PrepareContext(ctx, query)
 
 	if err != nil {
