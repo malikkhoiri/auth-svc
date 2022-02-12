@@ -28,6 +28,7 @@ func init() {
 }
 
 func main() {
+	// database config
 	dbName := viper.GetString(`mysql.database`)
 	mysqlHost := viper.GetString(`mysql.host`)
 	mysqlPort := viper.GetString(`mysql.port`)
